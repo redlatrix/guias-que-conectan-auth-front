@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "ES2022"],
+    "jsx": "react-jsx",
+    "target": "ES2020",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+
+    /* modules */
+    "module": "ESNext",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "skipDefaultLibCheck": true,
+    "ignoreDeprecations": "5.0",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "baseUrl": ".", 
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@features/*": ["./src/features/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@services/*": ["./src/services/*"],
+      "@store/*": ["./src/store/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"]
+    }
+  }
+}
