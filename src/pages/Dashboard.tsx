@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,25 +21,7 @@ export const Dashboard = () => {
       {/* Header */}
       <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-7 h-7 text-cream opacity-90"
-            fill="none"
-            viewBox="0 0 48 48"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <circle cx="24" cy="10" r="3" fill="currentColor" stroke="none" />
-            <circle cx="10" cy="30" r="3" fill="currentColor" stroke="none" />
-            <circle cx="38" cy="30" r="3" fill="currentColor" stroke="none" />
-            <circle cx="18" cy="40" r="3" fill="currentColor" stroke="none" />
-            <circle cx="30" cy="40" r="3" fill="currentColor" stroke="none" />
-            <line x1="24" y1="10" x2="10" y2="30" strokeWidth={1.5} />
-            <line x1="24" y1="10" x2="38" y2="30" strokeWidth={1.5} />
-            <line x1="10" y1="30" x2="18" y2="40" strokeWidth={1.5} />
-            <line x1="38" y1="30" x2="30" y2="40" strokeWidth={1.5} />
-            <line x1="10" y1="30" x2="38" y2="30" strokeWidth={1.5} />
-          </svg>
+          <GlobeIcon size={36} />
           <div>
             <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
               Guias que
