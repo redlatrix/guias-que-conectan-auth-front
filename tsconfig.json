@@ -19,7 +19,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "skipDefaultLibCheck": true,
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

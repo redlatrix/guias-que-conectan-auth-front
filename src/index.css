@@ -1,1 +1,25 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600&display=swap');
+
+@theme {
+  --color-olive: #595622;
+  --color-olive-dark: #3e3b17;
+  --color-amber: #D9984A;
+  --color-copper: #A65221;
+  --color-copper-dark: #8a4219;
+  --color-brown: #734226;
+  --color-cream: #F5F5EF;
+
+  --font-crimson: 'Crimson Pro', serif;
+  --font-public: 'Public Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-public);
+  background-color: var(--color-cream);
+  color: #1a1a1a;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-crimson);
+}

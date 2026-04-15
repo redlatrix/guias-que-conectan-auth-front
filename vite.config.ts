@@ -8,9 +8,18 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-    resolve: {
+  resolve: {
     alias: {
-     '@': resolve(__dirname, './src'),
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://auth.guiasqueconectan.ml-ware.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
     },
   },
 })
