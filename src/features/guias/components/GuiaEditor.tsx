@@ -46,7 +46,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
     setRegeneratingIdx(i);
     try {
       const { url } = await guiaService.regenerarImagen(guia.id, prompt);
-      const fullUrl = buildImageUrl(url);
       // Actualizar bloque con nueva URL
       setBlocks((prev) =>
         prev.map((b, idx) =>
