@@ -11,11 +11,6 @@ interface GuiaEditorProps {
   onPublish?: () => void;
 }
 
-const buildImageUrl = (url: string): string => {
-  if (url.startsWith('http')) return url;
-  const base = (import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api').replace(/\/api$/, '');
-  return `${base}${url}`;
-};
 
 export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: GuiaEditorProps) => {
   const [titulo, setTitulo] = useState(guia.titulo);
