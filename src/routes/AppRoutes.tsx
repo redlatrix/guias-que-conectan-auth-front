@@ -2,6 +2,8 @@ import { Navigate, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { ExplorarGuiasPage } from '@/pages/ExplorarGuiasPage';
+import { ExplorarGuiaDetallePage } from '@/pages/ExplorarGuiaDetallePage';
 import { Dashboard } from '@/pages/Dashboard';
 import { GeneradorPage } from '@/pages/GeneradorPage';
 import { MisGuiasPage } from '@/pages/MisGuiasPage';
@@ -13,6 +15,8 @@ export const AppRoutes = () => {
       {/* Rutas Públicas */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/explorar" element={<ExplorarGuiasPage />} />
+      <Route path="/explorar/:id" element={<ExplorarGuiaDetallePage />} />
 
       {/* Rutas Protegidas */}
       <Route element={<ProtectedRoute />}>

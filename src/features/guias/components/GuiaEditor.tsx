@@ -1,29 +1,33 @@
 import { useState } from 'react';
 import { GuiaBlock } from './GuiaBlock';
-import type { Guia, BloqueContenido } from '../types/guia.types';
+import { guiaService } from '../api/guia.api';
+import type { Guia, BloqueContenido, MetadataImagen } from '../types/guia.types';
 
 interface GuiaEditorProps {
   guia: Guia;
   isSaving: boolean;
+  isPublishing?: boolean;
   onSave: (titulo: string, contenido_json: BloqueContenido[]) => void;
+  onPublish?: () => void;
 }
 
-/**
- * Editor de guía con edición optimista por bloque.
- * - El título es editable al hacer clic.
- * - Cada bloque muestra un botón "Editar" al hacer hover.
- * - "Guardar Cambios" llama a PUT /api/guias/:id con el estado local.
- */
-export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
+const buildImageUrl = (url: string): string => {
+  if (url.startsWith('http')) return url;
+  const base = (import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api').replace(/\/api$/, '');
+  return `${base}${url}`;
+};
+
+export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: GuiaEditorProps) => {
   const [titulo, setTitulo] = useState(guia.titulo);
   const [blocks, setBlocks] = useState<BloqueContenido[]>(guia.contenido_json);
   const [editingIndices, setEditingIndices] = useState<Set<number>>(new Set());
   const [editingTitle, setEditingTitle] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [regeneratingIdx, setRegeneratingIdx] = useState<number | null>(null);
 
   const toggleBlock = (i: number) => {
     setEditingIndices((prev) => {
-      const next = new Set(prev); // siempre nueva referencia para trigger de re-render
+      const next = new Set(prev);
       next.has(i) ? next.delete(i) : next.add(i);
       return next;
     });
@@ -33,12 +37,50 @@ export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
     setBlocks((prev) => prev.map((b, idx) => (idx === i ? { ...b, contenido } : b)));
   };
 
+  const handleRegenerateImage = async (i: number) => {
+    const block = blocks[i];
+    const meta = block.metadata as unknown as MetadataImagen;
+    const prompt = meta.alt || block.contenido.replace(/^!\[([^\]]*)\].*$/, '$1');
+    if (!prompt) return;
+
+    setRegeneratingIdx(i);
+    try {
+      const { url } = await guiaService.regenerarImagen(guia.id, prompt);
+      const fullUrl = buildImageUrl(url);
+      // Actualizar bloque con nueva URL
+      setBlocks((prev) =>
+        prev.map((b, idx) =>
+          idx === i
+            ? {
+                ...b,
+                contenido: `![${prompt}](${url})`,
+                metadata: { ...b.metadata, url, alt: prompt },
+              }
+            : b
+        )
+      );
+      // Auto-guardar con la nueva imagen
+      const updatedBlocks = blocks.map((b, idx) =>
+        idx === i
+          ? { ...b, contenido: `![${prompt}](${url})`, metadata: { ...b.metadata, url, alt: prompt } }
+          : b
+      );
+      await onSave(titulo, updatedBlocks);
+    } catch {
+      // silencioso — el bloque mantiene la imagen anterior
+    } finally {
+      setRegeneratingIdx(null);
+    }
+  };
+
   const handleSave = async () => {
     setSaveSuccess(false);
     await onSave(titulo, blocks);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
   };
+
+  const esPublicada = guia.estado === 'publicado';
 
   return (
     <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8 border-t-4 border-copper font-public">
@@ -79,7 +121,7 @@ export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
 
         <div className="flex flex-wrap items-center gap-3 mt-3">
           <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full font-public uppercase tracking-wide ${
-            guia.estado === 'publicado' ? 'bg-olive/10 text-olive' : 'bg-amber/20 text-amber'
+            esPublicada ? 'bg-olive/10 text-olive' : 'bg-amber/20 text-amber'
           }`}>
             {guia.estado}
           </span>
@@ -93,10 +135,14 @@ export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
 
       {/* Bloques editables */}
       <div className="space-y-4">
-        {blocks.map((block, i) => (
-          // Las imágenes no son editables con textarea
+        {blocks.map((block, i) =>
           block.tipo === 'imagen' ? (
-            <GuiaBlock key={i} block={block} />
+            <GuiaBlock
+              key={i}
+              block={block}
+              onRegenerateImage={() => handleRegenerateImage(i)}
+              isRegenerating={regeneratingIdx === i}
+            />
           ) : (
             <div key={i} className="relative group">
               <GuiaBlock
@@ -112,15 +158,16 @@ export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
               </button>
             </div>
           )
-        ))}
+        )}
       </div>
 
-      {/* Footer con botón guardar */}
-      <div className="mt-8 flex items-center justify-between gap-4">
+      {/* Footer */}
+      <div className="mt-8 pt-5 border-t border-gray-100 flex items-center justify-between gap-4 flex-wrap">
         <p className="text-xs text-gray-400 font-public">
           Los cambios crean una nueva versión en el servidor.
         </p>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-3 flex-wrap">
           {saveSuccess && (
             <span className="text-sm text-olive font-public flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -129,23 +176,57 @@ export const GuiaEditor = ({ guia, isSaving, onSave }: GuiaEditorProps) => {
               Guardado
             </span>
           )}
+
           <button
             disabled={isSaving}
             onClick={handleSave}
-            className="bg-copper hover:bg-copper-dark text-white font-public font-semibold px-6 py-2.5 rounded-lg transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="bg-copper hover:bg-copper-dark text-white font-public font-semibold px-5 py-2.5 rounded-lg transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSaving ? (
               <span className="flex items-center gap-2">
-                <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                 </svg>
                 Guardando...
               </span>
-            ) : (
-              'Guardar Cambios'
-            )}
+            ) : 'Guardar Cambios'}
           </button>
+
+          {/* Publicar — solo si está en borrador y se pasó el callback */}
+          {!esPublicada && onPublish && (
+            <button
+              onClick={onPublish}
+              disabled={isPublishing || isSaving}
+              className="flex items-center gap-2 bg-olive hover:bg-olive-dark text-cream font-public font-semibold px-5 py-2.5 rounded-lg transition disabled:opacity-60"
+            >
+              {isPublishing ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Publicando...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Publicar guía
+                </>
+              )}
+            </button>
+          )}
+
+          {esPublicada && (
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-olive bg-olive/10 px-3 py-2 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Publicada
+            </span>
+          )}
         </div>
       </div>
     </article>

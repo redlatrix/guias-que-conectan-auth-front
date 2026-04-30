@@ -21,25 +21,53 @@ interface GuiaBlockProps {
   block: BloqueContenido;
   isEditing?: boolean;
   onContentChange?: (contenido: string) => void;
+  onRegenerateImage?: () => void;
+  isRegenerating?: boolean;
 }
 
-export const GuiaBlock = ({ block, isEditing, onContentChange }: GuiaBlockProps) => {
+export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage, isRegenerating }: GuiaBlockProps) => {
   // ── IMAGEN ──────────────────────────────────────────────────────────────────
   if (block.tipo === 'imagen') {
     const meta = block.metadata as unknown as MetadataImagen;
     const src = buildImageUrl(meta.url);
     return (
-      <figure className="my-4">
+      <figure className="my-4 group/img">
         <img
           src={src}
           alt={meta.alt}
-          className="rounded-lg max-w-full mx-auto shadow-sm border border-gray-100"
+          className="rounded-lg max-w-xs mx-auto shadow-sm border border-gray-100"
           loading="lazy"
         />
         {meta.alt && (
           <figcaption className="text-center text-xs text-gray-400 mt-2 font-public italic">
             {meta.alt}
           </figcaption>
+        )}
+        {onRegenerateImage && (
+          <div className="flex justify-center mt-2">
+            <button
+              onClick={onRegenerateImage}
+              disabled={isRegenerating}
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-copper border border-gray-200 hover:border-copper/50 bg-white px-3 py-1.5 rounded-full transition disabled:opacity-50 font-public"
+            >
+              {isRegenerating ? (
+                <>
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Generando...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Regenerar imagen
+                </>
+              )}
+            </button>
+          </div>
         )}
       </figure>
     );
@@ -58,7 +86,20 @@ export const GuiaBlock = ({ block, isEditing, onContentChange }: GuiaBlockProps)
     }
     return (
       <div className="prose prose-stone max-w-none font-public text-gray-800 leading-relaxed">
-        <ReactMarkdown>{block.contenido}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            img: ({ src, alt }) => (
+              <img src={src} alt={alt} className="rounded-lg max-w-xs mx-auto shadow-sm border border-gray-100 my-2" loading="lazy" />
+            ),
+            a: ({ href, children }) => (
+              <a href={href} target="_blank" rel="noopener noreferrer" className="text-copper hover:text-brown underline underline-offset-2 transition">
+                {children}
+              </a>
+            ),
+          }}
+        >
+          {block.contenido}
+        </ReactMarkdown>
       </div>
     );
   }

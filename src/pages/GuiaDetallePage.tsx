@@ -11,7 +11,7 @@ export const GuiaDetallePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { clearAuth } = useAuth();
-  const { currentGuia, isLoadingList, isSaving, error, loadGuia, saveGuia } = useGuias();
+  const { currentGuia, isLoadingList, isSaving, isPublishing, error, loadGuia, saveGuia, publishGuia } = useGuias();
 
   useEffect(() => {
     if (id) loadGuia(Number(id));
@@ -26,6 +26,11 @@ export const GuiaDetallePage = () => {
   const handleSave = async (titulo: string, contenido_json: BloqueContenido[]) => {
     if (!currentGuia) return;
     await saveGuia(currentGuia.id, { titulo, contenido_json });
+  };
+
+  const handlePublish = async () => {
+    if (!currentGuia) return;
+    await publishGuia(currentGuia.id);
   };
 
   return (
@@ -72,7 +77,7 @@ export const GuiaDetallePage = () => {
             Mis Guías
           </Link>
           <span>›</span>
-          <span className="text-gray-600 truncate max-w-[200px]">
+          <span className="text-gray-600 truncate max-w-[260px]">
             {currentGuia ? currentGuia.titulo : `Guía #${id}`}
           </span>
         </div>
@@ -97,7 +102,13 @@ export const GuiaDetallePage = () => {
         )}
 
         {currentGuia && !isLoadingList && (
-          <GuiaEditor guia={currentGuia} isSaving={isSaving} onSave={handleSave} />
+          <GuiaEditor
+            guia={currentGuia}
+            isSaving={isSaving}
+            isPublishing={isPublishing}
+            onSave={handleSave}
+            onPublish={handlePublish}
+          />
         )}
       </main>
     </div>

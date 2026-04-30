@@ -23,7 +23,7 @@ export const GeneradorGuia = () => {
   const [step1Data, setStep1Data] = useState<Step1FormData | null>(null);
 
   const catalogo = useCatalogo();
-  const { currentGuia, isGenerating, isSaving, error, generateGuia, saveGuia, resetGuia } =
+  const { currentGuia, isGenerating, isSaving, isPublishing, error, generateGuia, saveGuia, publishGuia, resetGuia } =
     useGuias();
 
   // Formularios independientes por paso
@@ -31,8 +31,11 @@ export const GeneradorGuia = () => {
     register: register1,
     handleSubmit: handleSubmit1,
     setValue: setValue1,
+    watch: watch1,
     formState: { errors: errors1 },
   } = useForm<Step1FormData>();
+
+  const dbaIdActual = watch1('dba_id');
 
   const {
     register: register2,
@@ -91,7 +94,13 @@ export const GeneradorGuia = () => {
             + Nueva guía
           </button>
         </div>
-        <GuiaEditor guia={currentGuia} isSaving={isSaving} onSave={handleSave} />
+        <GuiaEditor
+          guia={currentGuia}
+          isSaving={isSaving}
+          isPublishing={isPublishing}
+          onSave={handleSave}
+          onPublish={() => publishGuia(currentGuia.id)}
+        />
       </div>
     );
   }
@@ -229,14 +238,17 @@ export const GeneradorGuia = () => {
             )}
           </div>
 
-          {/* DBA */}
+          {/* DBA — select controlado para evitar desincronía con react-hook-form */}
           <div>
             <label className={labelClass}>Derecho Básico de Aprendizaje (DBA)</label>
             <select
               {...register1('dba_id', { required: 'Selecciona un DBA', valueAsNumber: true })}
+              value={dbaIdActual || ''}
+              onChange={(e) => {
+                setValue1('dba_id', Number(e.target.value), { shouldValidate: true });
+              }}
               disabled={!catalogo.selectedCompetencia || catalogo.loadingDBAs}
               className={selectClass}
-              defaultValue=""
             >
               <option value="" disabled>
                 {!catalogo.selectedCompetencia

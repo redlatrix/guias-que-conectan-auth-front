@@ -39,4 +39,24 @@ export const guiaService = {
     if (!found) throw new Error('Guía no encontrada');
     return found;
   },
+
+  publishGuia: async (id: number): Promise<Guia> => {
+    const { data } = await coreApi.post<{ guia: Guia }>(`/guias/${id}/publish`);
+    return data.guia;
+  },
+
+  regenerarImagen: async (id: number, prompt: string): Promise<{ url: string }> => {
+    const { data } = await coreApi.post<{ url: string }>(`/guias/${id}/regenerar-imagen`, { prompt });
+    return data;
+  },
+
+  getGuiasPublicas: async (): Promise<Guia[]> => {
+    const { data } = await coreApi.get<Guia[]>('/guias/publicas');
+    return data;
+  },
+
+  getGuiaPublica: async (id: number): Promise<Guia> => {
+    const { data } = await coreApi.get<Guia>(`/guias/publicas/${id}`);
+    return data;
+  },
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthCard } from '@/features/auth/components/AuthCard';
+import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 import { authService } from '@/features/auth/api/auth.api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import type { LoginCredentials } from '@/features/auth/types/auth.types';
@@ -34,7 +35,30 @@ export const LoginPage = () => {
   };
 
   return (
-    <AuthCard title="Inicio de sesión">
+    <>
+      {/* Navbar público */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-olive px-6 py-3 flex items-center justify-start gap-20 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <GlobeIcon size={28} />
+          <div>
+            <p className="text-cream font-crimson font-bold text-sm tracking-widest uppercase leading-none">
+              Guias que
+            </p>
+            <p className="text-cream/70 text-[9px] tracking-[0.3em] uppercase font-public">
+              Conectan
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/explorar"
+          className=" bg-copper text-cream hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
+        >
+          Explorar guías
+        </Link>
+      </nav>
+
+      <div className="pt-14">
+        <AuthCard title="Inicio de sesión">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
         {/* Email */}
         <div>
@@ -100,6 +124,8 @@ export const LoginPage = () => {
           </Link>
         </p>
       </form>
-    </AuthCard>
+        </AuthCard>
+      </div>
+    </>
   );
 };

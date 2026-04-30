@@ -12,6 +12,7 @@ export interface UseGuiasReturn {
   currentGuia: Guia | null;
   isGenerating: boolean;
   isSaving: boolean;
+  isPublishing: boolean;
   isLoadingList: boolean;
   error: string | null;
   generateGuia: (
@@ -19,6 +20,7 @@ export interface UseGuiasReturn {
     guiaPayload: Omit<GenerateGuiaPayload, 'sesion_id'>
   ) => Promise<void>;
   saveGuia: (id: number, payload: UpdateGuiaPayload) => Promise<void>;
+  publishGuia: (id: number) => Promise<void>;
   setCurrentGuia: (guia: Guia | null) => void;
   loadMisGuias: () => Promise<void>;
   loadGuia: (id: number) => Promise<void>;
@@ -30,6 +32,7 @@ export const useGuias = (): UseGuiasReturn => {
   const [currentGuia, setCurrentGuia] = useState<Guia | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,6 +92,20 @@ export const useGuias = (): UseGuiasReturn => {
     }
   }, []);
 
+  const publishGuia = useCallback(async (id: number) => {
+    setIsPublishing(true);
+    setError(null);
+    try {
+      const updated = await guiaService.publishGuia(id);
+      setCurrentGuia(updated);
+      setGuias((prev) => prev.map((g) => (g.id === id ? updated : g)));
+    } catch {
+      setError('Error al publicar la guía');
+    } finally {
+      setIsPublishing(false);
+    }
+  }, []);
+
   const loadGuia = useCallback(async (id: number) => {
     setIsLoadingList(true);
     setError(null);
@@ -112,10 +129,12 @@ export const useGuias = (): UseGuiasReturn => {
     currentGuia,
     isGenerating,
     isSaving,
+    isPublishing,
     isLoadingList,
     error,
     generateGuia,
     saveGuia,
+    publishGuia,
     setCurrentGuia,
     loadMisGuias,
     loadGuia,
