@@ -44,3 +44,54 @@ h1, h2, h3 {
 .animate-spin-medium  { animation: spin-slow    5s linear infinite; }
 .animate-spin-reverse { animation: spin-reverse 6s linear infinite; }
 .animate-pulse-dot    { animation: pulse-dot    2s ease-in-out infinite; }
+
+/* ── Estilos de impresión — Actividad Imprimible ──────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+
+  /* Solo mostrar el contenido de la actividad imprimible */
+  body > * {
+    display: none !important;
+  }
+  .actividad-imprimible {
+    display: block !important;
+  }
+
+  /* Tipografía optimizada para impresión */
+  .actividad-imprimible {
+    color: #000 !important;
+    background: #fff !important;
+    font-size: 11pt;
+    line-height: 1.6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Bordes de tabla visibles en blanco y negro */
+  .actividad-imprimible table,
+  .actividad-imprimible th,
+  .actividad-imprimible td {
+    border-color: #000 !important;
+  }
+
+  /* Fondos claros visibles en grises */
+  .actividad-imprimible th,
+  .actividad-imprimible thead {
+    background-color: #e0e0e0 !important;
+  }
+
+  /* Evitar cortes de página dentro de un ejercicio */
+  .actividad-imprimible .print-block {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Eliminar sombras y efectos que no se imprimen bien */
+  .actividad-imprimible * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

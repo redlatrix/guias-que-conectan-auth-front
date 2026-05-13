@@ -1,5 +1,6 @@
 import { Navigate, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
+import { LandingPage } from '@/pages/LandingPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ExplorarGuiasPage } from '@/pages/ExplorarGuiasPage';
@@ -12,6 +13,9 @@ import { GuiaDetallePage } from '@/pages/GuiaDetallePage';
 export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Página de aterrizaje pública */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Rutas Públicas */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

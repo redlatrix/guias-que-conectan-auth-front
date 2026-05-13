@@ -25,7 +25,6 @@ export const MisGuiasPage = () => {
 
   useEffect(() => {
     loadMisGuias();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {

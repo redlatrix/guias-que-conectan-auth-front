@@ -45,10 +45,6 @@ export interface MetadataActividad {
   tipo: 'individual' | 'grupal' | 'parejas';
 }
 
-export interface MetadataCuestionario {
-  tipo_pregunta: 'abierta' | 'cerrada';
-}
-
 // ─── Sesión ──────────────────────────────────────────────────────────────────
 
 export interface Sesion {

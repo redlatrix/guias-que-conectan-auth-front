@@ -1,9 +1,9 @@
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type {
   BloqueContenido,
   MetadataImagen,
   MetadataActividad,
-  MetadataCuestionario,
 } from '../types/guia.types';
 
 /**
@@ -87,6 +87,7 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
     return (
       <div className="prose prose-stone max-w-none font-public text-gray-800 leading-relaxed">
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             img: ({ src, alt }) => (
               <img src={src} alt={alt} className="rounded-lg max-w-xs mx-auto shadow-sm border border-gray-100 my-2" loading="lazy" />
@@ -95,6 +96,9 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
               <a href={href} target="_blank" rel="noopener noreferrer" className="text-copper hover:text-brown underline underline-offset-2 transition">
                 {children}
               </a>
+            ),
+            hr: () => (
+              <div style={{ borderBottom: '1px solid #d1d5db', margin: '4px 0 8px 0' }} />
             ),
           }}
         >
@@ -132,7 +136,9 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
           />
         ) : (
           <div className="prose prose-sm prose-stone max-w-none font-public text-gray-800">
-            <ReactMarkdown>{block.contenido}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+              hr: () => <div style={{ borderBottom: '1px solid #d1d5db', margin: '4px 0 8px 0' }} />,
+            }}>{block.contenido}</ReactMarkdown>
           </div>
         )}
       </div>
@@ -141,18 +147,12 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
 
   // ── CUESTIONARIO ─────────────────────────────────────────────────────────────
   if (block.tipo === 'cuestionario') {
-    const meta = block.metadata as Partial<MetadataCuestionario>;
     return (
       <div className="bg-copper/10 border-l-4 border-copper rounded-r-xl p-5 my-4">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className="text-xs font-semibold uppercase tracking-widest text-copper font-public">
             Cuestionario
           </span>
-          {meta.tipo_pregunta && (
-            <span className="bg-white border border-copper/40 text-copper text-xs px-2 py-0.5 rounded-full font-public capitalize">
-              {meta.tipo_pregunta}
-            </span>
-          )}
         </div>
         {isEditing ? (
           <textarea
@@ -162,7 +162,9 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
           />
         ) : (
           <div className="prose prose-sm prose-stone max-w-none font-public text-gray-800">
-            <ReactMarkdown>{block.contenido}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+              hr: () => <div style={{ borderBottom: '1px solid #d1d5db', margin: '4px 0 8px 0' }} />,
+            }}>{block.contenido}</ReactMarkdown>
           </div>
         )}
       </div>
