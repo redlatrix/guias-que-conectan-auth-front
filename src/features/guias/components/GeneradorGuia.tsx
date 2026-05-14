@@ -4,6 +4,7 @@ import { useCatalogo } from '../hooks/useCatalogo';
 import { useGuias } from '../hooks/useGuias';
 import { SkeletonGuia } from './SkeletonGuia';
 import { GuiaEditor } from './GuiaEditor';
+import { DbaDropdown } from './DbaDropdown';
 import type { Step1FormData, Step2FormData, BloqueContenido } from '../types/guia.types';
 
 // ── Helpers de UI ─────────────────────────────────────────────────────────────
@@ -54,7 +55,10 @@ export const GeneradorGuia = () => {
     if (!step1Data) return;
     const numEstudiantes = data.numero_estudiantes;
     await generateGuia(
-      { dba_catalogo_id: step1Data.dba_id },
+      {
+        dba_catalogo_id: step1Data.dba_id,
+        competencia_id:  step1Data.competencia_id ?? null,
+      },
       {
         prompt_docente: data.prompt_docente,
         numero_estudiantes: numEstudiantes && !isNaN(numEstudiantes) ? numEstudiantes : undefined,
@@ -177,7 +181,6 @@ export const GeneradorGuia = () => {
               onChange={(e) => {
                 const id = Number(e.target.value);
                 setValue1('grado_id', id);
-                setValue1('competencia_id', 0);
                 setValue1('dba_id', 0);
                 const grado = catalogo.grados.find((g) => g.id === id) ?? null;
                 catalogo.selectGrado(grado);
@@ -190,7 +193,7 @@ export const GeneradorGuia = () => {
               </option>
               {catalogo.grados.map((g) => (
                 <option key={g.id} value={g.id}>
-                  {g.nombre} — {g.ciclo}
+                  {g.nombre}
                 </option>
               ))}
             </select>
@@ -199,31 +202,27 @@ export const GeneradorGuia = () => {
             )}
           </div>
 
-          {/* Competencia */}
+          {/* Competencia — metadato independiente, no bloquea carga de DBAs */}
           <div>
-            <label className={labelClass}>Competencia</label>
+            <label className={labelClass}>
+              Competencia <span className="text-gray-400 font-normal normal-case tracking-normal">(opcional — contexto para la IA)</span>
+            </label>
             <select
-              {...register1('competencia_id', {
-                required: 'Selecciona una competencia',
-                valueAsNumber: true,
-              })}
+              {...register1('competencia_id', { valueAsNumber: true })}
               disabled={!catalogo.selectedGrado || catalogo.loadingCompetencias}
               onChange={(e) => {
                 const id = Number(e.target.value);
-                setValue1('competencia_id', id);
-                setValue1('dba_id', 0);
-                const comp = catalogo.competencias.find((c) => c.id === id) ?? null;
-                catalogo.selectCompetencia(comp);
+                setValue1('competencia_id', id || undefined);
               }}
               className={selectClass}
               defaultValue=""
             >
-              <option value="" disabled>
+              <option value="">
                 {!catalogo.selectedGrado
                   ? 'Primero selecciona un grado'
                   : catalogo.loadingCompetencias
                   ? 'Cargando competencias...'
-                  : 'Selecciona una competencia'}
+                  : 'Sin competencia específica'}
               </option>
               {catalogo.competencias.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -231,40 +230,27 @@ export const GeneradorGuia = () => {
                 </option>
               ))}
             </select>
-            {errors1.competencia_id && (
-              <p className="text-xs text-red-500 mt-1 font-public">
-                {errors1.competencia_id.message}
-              </p>
-            )}
           </div>
 
-          {/* DBA — select controlado para evitar desincronía con react-hook-form */}
+          {/* DBA — custom dropdown con enunciado completo */}
           <div>
-            <label className={labelClass}>Derecho Básico de Aprendizaje (DBA)</label>
-            <select
-              {...register1('dba_id', { required: 'Selecciona un DBA', valueAsNumber: true })}
-              value={dbaIdActual || ''}
-              onChange={(e) => {
-                setValue1('dba_id', Number(e.target.value), { shouldValidate: true });
-              }}
-              disabled={!catalogo.selectedCompetencia || catalogo.loadingDBAs}
-              className={selectClass}
-            >
-              <option value="" disabled>
-                {!catalogo.selectedCompetencia
-                  ? 'Primero selecciona una competencia'
+            <label className={labelClass}>Derecho Básico de Aprendizaje (DBA) <span className="text-red-400">*</span></label>
+            {/* Campo oculto para react-hook-form */}
+            <input type="hidden" {...register1('dba_id', { required: 'Selecciona un DBA', valueAsNumber: true })} />
+            <DbaDropdown
+              dbas={catalogo.dbas}
+              value={dbaIdActual || 0}
+              onChange={(id) => setValue1('dba_id', id, { shouldValidate: true })}
+              loading={catalogo.loadingDBAs}
+              disabled={!catalogo.selectedGrado}
+              placeholder={
+                !catalogo.selectedGrado
+                  ? 'Primero selecciona un grado'
                   : catalogo.loadingDBAs
                   ? 'Cargando DBAs...'
-                  : 'Selecciona un DBA'}
-              </option>
-              {catalogo.dbas.map((d) => (
-                <option key={d.id} value={d.id}>
-                  [{d.codigo_men}] {d.enunciado_oficial.length > 80
-                    ? d.enunciado_oficial.slice(0, 80) + '...'
-                    : d.enunciado_oficial}
-                </option>
-              ))}
-            </select>
+                  : 'Selecciona un DBA'
+              }
+            />
             {errors1.dba_id && (
               <p className="text-xs text-red-500 mt-1 font-public">{errors1.dba_id.message}</p>
             )}

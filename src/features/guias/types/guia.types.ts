@@ -1,10 +1,7 @@
-// ─── Catálogo ────────────────────────────────────────────────────────────────
-
 export interface Grado {
   id: number;
   nombre: string;
   numero: number;
-  ciclo: string;
   area: string;
 }
 
@@ -23,8 +20,6 @@ export interface DBA {
   evidencias_aprendizaje: string;
 }
 
-// ─── Bloques de contenido ────────────────────────────────────────────────────
-
 export type TipoBloque = 'texto' | 'imagen' | 'actividad' | 'cuestionario';
 
 export interface BloqueContenido {
@@ -33,7 +28,6 @@ export interface BloqueContenido {
   metadata: Record<string, unknown>;
 }
 
-// Shapes tipadas de metadata por bloque
 export interface MetadataImagen {
   alt: string;
   url: string;
@@ -45,8 +39,6 @@ export interface MetadataActividad {
   tipo: 'individual' | 'grupal' | 'parejas';
 }
 
-// ─── Sesión ──────────────────────────────────────────────────────────────────
-
 export interface Sesion {
   id: number;
   docente_id: number;
@@ -56,8 +48,6 @@ export interface Sesion {
   prompt_sistema: string;
   creado_en: string;
 }
-
-// ─── Guía ────────────────────────────────────────────────────────────────────
 
 export type EstadoGuia = 'borrador' | 'publicado';
 
@@ -74,10 +64,9 @@ export interface Guia {
   actualizado_en?: string;
 }
 
-// ─── Payloads de API ─────────────────────────────────────────────────────────
-
 export interface CreateSesionPayload {
   dba_catalogo_id: number;
+  competencia_id?: number | null;
   modelo_ia?: string;
 }
 
@@ -93,11 +82,10 @@ export interface UpdateGuiaPayload {
   contenido_json?: BloqueContenido[];
 }
 
-// ─── Formulario wizard ───────────────────────────────────────────────────────
 
 export interface Step1FormData {
   grado_id: number;
-  competencia_id: number;
+  competencia_id?: number;
   dba_id: number;
 }
 
@@ -105,4 +93,9 @@ export interface Step2FormData {
   prompt_docente: string;
   numero_estudiantes?: number;
   duracion_sesion?: string;
+}
+
+export interface ActividadImprimibleProps {
+  allBlocks: BloqueContenido[];
+  titulo: string;
 }

@@ -2,8 +2,6 @@ import axios from 'axios';
 
 /**
  * Instancia de Axios para el backend core (guias-que-conectan-core).
- * Separada de `api.ts` porque el core corre en un origen distinto (localhost:3001)
- * mientras que el auth-api está desplegado en auth.guiasqueconectan.ml-ware.com.
  */
 export const coreApi = axios.create({
   baseURL: import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api',

@@ -37,7 +37,6 @@ export const Dashboard = () => {
         </button>
       </header>
 
-      {/* Content */}
       <main className="max-w-3xl mx-auto px-4 py-10">
         {/* Tarjeta bienvenida */}
         <div className="bg-white rounded-2xl shadow-md p-8 border-l-4 border-copper">
@@ -86,7 +85,6 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* Accesos rápidos */}
         <div className="mt-8">
           <h2 className="font-crimson text-xl font-semibold text-gray-700 mb-4">
             ¿Qué quieres hacer hoy?

@@ -1,9 +1,9 @@
 import { forwardRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import type { BloqueContenido, MetadataImagen } from '../types/guia.types';
+import type { ActividadImprimibleProps, MetadataImagen } from '../types/guia.types';
 
-// ── Constantes ─────────────────────────────────────────────────────────────────
+
 const ACTIVIDAD_MARKER = 'ACTIVIDAD PRÁCTICA IMPRIMIBLE';
 
 const buildImageUrl = (url: string): string => {
@@ -12,20 +12,11 @@ const buildImageUrl = (url: string): string => {
   return `${base}${url}`;
 };
 
-// ── Tipos ──────────────────────────────────────────────────────────────────────
-interface ActividadImprimibleProps {
-  /** Todos los bloques de la guía — la imagen y la actividad se extraen internamente */
-  allBlocks: BloqueContenido[];
-  titulo: string;
-}
-
 /**
  * Hoja de trabajo imprimible de estilo editorial para el estudiante.
  *
  * — Incluye la imagen ilustrativa generada por DALL·E (float derecha).
  * — Solo renderiza la sección "ACTIVIDAD PRÁCTICA IMPRIMIBLE".
- * — Diseño tipográfico limpio sin recuadros excesivos.
- * — Se referencia desde PrintButton vía forwardRef.
  */
 export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibleProps>(
   ({ allBlocks, titulo }, ref) => {
@@ -41,7 +32,6 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
 
     if (!actividadBlocks.length) return null;
 
-    // ── Render ─────────────────────────────────────────────────────────────────
     return (
       <div
         ref={ref}
@@ -85,10 +75,8 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
           </div>
         </div>
 
-        {/* ══ CONTENIDO (imagen flotada + ejercicios) ═══════════════════════════ */}
+        {/* ══ CONTENIDO */}
         <div style={{ overflow: 'hidden' }}>
-
-          {/* Imagen ilustrativa — float derecha, estilo editorial */}
           {imageUrl && (
             <figure style={{
               float: 'right',
@@ -110,17 +98,14 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
             </figure>
           )}
 
-          {/* Bloques de la actividad — se omiten los de imagen (ya está en float derecha) */}
           {actividadBlocks.map((block, i) => {
             if (block.tipo === 'imagen') return null;
             return (<div key={i} className="print-block">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  // ── H2: Ejercicio / sección — sin cajas ───────────────────
                   h2: ({ children }) => {
                     const text = String(children ?? '');
-                    // Omitir el h2 del marcador principal (ya está en la cabecera)
                     if (text.includes(ACTIVIDAD_MARKER)) return null;
                     return (
                       <h2 style={{
@@ -138,7 +123,7 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
                       </h2>
                     );
                   },
-                  // ── H3: Sub-sección ───────────────────────────────────────
+
                   h3: ({ children }) => (
                     <h3 style={{
                       fontFamily: 'inherit',
@@ -151,10 +136,9 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
                       {children}
                     </h3>
                   ),
-                  // ── Párrafo ───────────────────────────────────────────────
+
                   p: ({ children }) => {
-                    // Omitir líneas "Nombre: ___ Grado: ___ Fecha: ___" generadas
-                    // por GPT en guías antiguas — el componente ya las dibuja en el encabezado
+
                     const text = Array.isArray(children)
                       ? children.map((c) => (typeof c === 'string' ? c : '')).join('')
                       : String(children ?? '');
@@ -165,7 +149,7 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
                       </p>
                     );
                   },
-                  // ── HR: línea de respuesta (25 guiones bajos = <hr>) ──────
+
                   hr: () => (
                     <div style={{
                       borderBottom: '1px solid #aaa',
@@ -174,14 +158,14 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
                       height: '0',
                     }} />
                   ),
-                  // ── Negrita / cursiva ─────────────────────────────────────
+
                   strong: ({ children }) => (
                     <strong style={{ fontWeight: '700' }}>{children}</strong>
                   ),
                   em: ({ children }) => (
                     <em style={{ fontStyle: 'italic' }}>{children}</em>
                   ),
-                  // ── Tabla editorial — bordes finos ────────────────────────
+
                   table: ({ children }) => (
                     <table style={{
                       width: '100%',
@@ -232,9 +216,7 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
                       {children}
                     </li>
                   ),
-                  // ── Separador visual (---) ────────────────────────────────
-                  // Nota: los ___ de 25 guiones también son <hr> en ReactMarkdown
-                  // Se estilizan igual como líneas de respuesta
+
                 }}
               >
                 {block.contenido}
@@ -243,7 +225,6 @@ export const ActividadImprimible = forwardRef<HTMLDivElement, ActividadImprimibl
           );
           })}
 
-          {/* Clear float */}
           <div style={{ clear: 'both' }} />
         </div>
 

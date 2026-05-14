@@ -37,11 +37,10 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   const imageBlock      = imageBlockIndex >= 0 ? blocks[imageBlockIndex] : null;
   const imageMeta       = imageBlock ? (imageBlock.metadata as unknown as MetadataImagen) : null;
 
-  // ── Separación docente / estudiante ───────────────────────────────────────
   const actividadStartIdx    = blocks.findIndex((b) => b.contenido.includes(ACTIVIDAD_MARKER));
   const hasActividadImprimible = actividadStartIdx >= 0;
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+
   const toggleBlock = (i: number) => {
     setEditingIndices((prev) => {
       const next = new Set(prev);
@@ -88,7 +87,7 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
 
   const esPublicada = guia.estado === 'publicado';
 
-  // ── Thumbnail de imagen reutilizable ──────────────────────────────────────
+
   const ImageThumbnail = () =>
     imageBlock && imageMeta?.url ? (
       <div className="flex items-center gap-4 py-3 px-4 bg-gray-50/80 rounded-xl border border-dashed border-gray-200">
@@ -134,7 +133,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   return (
     <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md border-t-4 border-copper font-public">
 
-      {/* ── Encabezado editable ──────────────────────────────────────────────── */}
       <header className="px-8 pt-8 pb-5 border-b border-gray-100">
         <p className="text-xs text-gray-400 uppercase tracking-widest font-public mb-1">
           Editando · Versión {guia.version_numero}
@@ -238,7 +236,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
         {/* Tab: Actividad del estudiante — bloques editables igual que la guía */}
         {activeTab === 'estudiante' && (
           <>
-            {/* Thumbnail de imagen con botón Regenerar */}
             <div className="mb-5">
               <ImageThumbnail />
             </div>
@@ -265,7 +262,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
               })}
             </div>
 
-            {/* Componente oculto — solo para el PDF */}
             <div className="hidden">
               <ActividadImprimible
                 ref={printRef}
@@ -294,7 +290,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
             </span>
           )}
 
-          {/* PDF — solo visible en la pestaña del estudiante */}
           {hasActividadImprimible && activeTab === 'estudiante' && (
             <PrintButton
               contentRef={printRef}

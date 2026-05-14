@@ -5,7 +5,7 @@ import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 import { useGuias } from '@/features/guias/hooks/useGuias';
 import { GuiaCard } from '@/features/guias/components/GuiaCard';
 
-/** Skeleton para las tarjetas de guías mientras cargan */
+
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-3">
     <div className="flex justify-between">
@@ -70,7 +70,7 @@ export const MisGuiasPage = () => {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-10">
-        {/* Encabezado */}
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-crimson text-3xl font-bold text-olive">Mis Guías</h1>
@@ -91,14 +91,14 @@ export const MisGuiasPage = () => {
           </Link>
         </div>
 
-        {/* Error */}
+
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-sm text-red-600 font-public">
             {error}
           </div>
         )}
 
-        {/* Grid de tarjetas */}
+
         {isLoadingList ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}

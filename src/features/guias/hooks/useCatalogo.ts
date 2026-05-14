@@ -27,7 +27,6 @@ export const useCatalogo = (): UseCatalogoReturn => {
   const [loadingDBAs, setLoadingDBAs] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar grados al montar
   useEffect(() => {
     setLoadingGrados(true);
     catalogoService
@@ -37,7 +36,7 @@ export const useCatalogo = (): UseCatalogoReturn => {
       .finally(() => setLoadingGrados(false));
   }, []);
 
-  // Cargar competencias cuando cambia el grado (cascada por area)
+
   useEffect(() => {
     if (!selectedGrado) {
       setCompetencias([]);
@@ -53,20 +52,20 @@ export const useCatalogo = (): UseCatalogoReturn => {
       .finally(() => setLoadingCompetencias(false));
   }, [selectedGrado]);
 
-  // Cargar DBAs cuando hay grado y competencia seleccionados
+
   useEffect(() => {
-    if (!selectedGrado || !selectedCompetencia) {
+    if (!selectedGrado) {
       setDBAs([]);
       return;
     }
     setLoadingDBAs(true);
     setDBAs([]);
     catalogoService
-      .getDBAs(selectedGrado.id, selectedCompetencia.id)
+      .getDBAs(selectedGrado.id)
       .then(setDBAs)
       .catch(() => setError('Error al cargar los DBAs'))
       .finally(() => setLoadingDBAs(false));
-  }, [selectedGrado, selectedCompetencia]);
+  }, [selectedGrado]);
 
   const selectGrado = useCallback((grado: Grado | null) => {
     setSelectedGrado(grado);

@@ -26,12 +26,10 @@ export const GuiaCard = ({ guia, onClick }: GuiaCardProps) => (
       </span>
     </div>
 
-    {/* Título */}
     <h3 className="font-crimson text-lg font-semibold text-gray-800 group-hover:text-copper transition-colors leading-snug mb-2">
       {guia.titulo}
     </h3>
 
-    {/* Fecha */}
     <p className="text-xs text-gray-400 font-public">
       {new Date(guia.creado_en).toLocaleDateString('es-CO', {
         day: '2-digit',

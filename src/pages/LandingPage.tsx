@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 
-// ── Icono auxiliar ────────────────────────────────────────────────────────────
 const CheckIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -14,7 +13,7 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
-// ── Navbar público ─────────────────────────────────────────────────────────────
+
 const PublicNavbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 bg-olive px-6 py-3 flex items-center justify-between shadow-sm">
     <div className="flex items-center gap-2.5">
@@ -45,7 +44,7 @@ const PublicNavbar = () => (
   </nav>
 );
 
-// ── Paso del "Cómo funciona" ──────────────────────────────────────────────────
+
 const Step = ({ n, titulo, desc }: { n: number; titulo: string; desc: string }) => (
   <div className="flex flex-col items-center text-center gap-4 flex-1 min-w-[200px]">
     <div className="w-12 h-12 rounded-full bg-olive text-cream flex items-center justify-center font-crimson font-bold text-xl shadow-md">
@@ -58,13 +57,12 @@ const Step = ({ n, titulo, desc }: { n: number; titulo: string; desc: string }) 
   </div>
 );
 
-// ── Componente principal ───────────────────────────────────────────────────────
+
 export const LandingPage = () => {
   return (
     <div className="min-h-screen bg-cream font-public">
       <PublicNavbar />
 
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
       <section className="bg-olive pt-28 pb-24 px-6 text-center">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-center mb-6">
@@ -94,10 +92,9 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── ¿QUÉ ES? ─────────────────────────────────────────────────────────── */}
+
       <section className="bg-cream py-20 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-12 items-center">
-          {/* Texto */}
           <div>
             <p className="text-xs uppercase tracking-widest text-copper font-semibold mb-3 font-public">
               La plataforma
@@ -135,7 +132,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── ¿QUÉ SON LOS DBA? ────────────────────────────────────────────────── */}
+
       <section className="bg-white py-20 px-6">
         <div className="max-w-3xl mx-auto">
           <p className="text-xs uppercase tracking-widest text-copper font-semibold mb-3 font-public text-center">
@@ -150,7 +147,7 @@ export const LandingPage = () => {
             desarrollar al finalizar cada grado escolar, según los lineamientos del MEN.
             Funcionan como referentes mínimos para planear, desarrollar y evaluar el proceso educativo.
           </p>
-          {/* Cita destacada */}
+
           <div className="border-l-4 border-copper bg-copper/5 rounded-r-xl px-6 py-5 mb-8">
             <p className="text-sm text-gray-500 font-public italic mb-2">
               Ejemplo de DBA — Grado 11° · Ciencias Sociales
@@ -175,7 +172,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── CÓMO FUNCIONA ─────────────────────────────────────────────────────── */}
+
       <section className="bg-cream py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-xs uppercase tracking-widest text-copper font-semibold mb-3 font-public text-center">
@@ -206,7 +203,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── CTA FINAL ─────────────────────────────────────────────────────────── */}
+
       <section className="bg-olive py-16 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-crimson text-3xl sm:text-4xl font-bold text-cream mb-4">
@@ -233,7 +230,6 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer className="bg-olive-dark py-6 px-6 text-center">
         <p className="text-cream/40 text-xs font-public">
           © 2026 Guías que Conectan · Plataforma educativa alineada con los DBA del MEN Colombia

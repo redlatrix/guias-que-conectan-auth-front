@@ -14,9 +14,9 @@ export const catalogoService = {
     return data;
   },
 
-  getDBAs: async (gradoId: number, competenciaId: number): Promise<DBA[]> => {
+  getDBAs: async (gradoId: number): Promise<DBA[]> => {
     const { data } = await coreApi.get<DBA[]>('/catalogo/dbas', {
-      params: { grado_id: gradoId, competencia_id: competenciaId },
+      params: { grado_id: gradoId },
     });
     return data;
   },

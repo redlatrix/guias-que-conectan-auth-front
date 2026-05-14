@@ -9,7 +9,6 @@ import type {
 /**
  * Construye la URL completa para imágenes del backend.
  * El storage devuelve paths como "/storage/images/uuid.png"
- * que son relativos al origen del core (no incluyen "/api").
  */
 const buildImageUrl = (url: string): string => {
   if (url.startsWith('http')) return url;

@@ -5,10 +5,7 @@ interface GuiaRendererProps {
   guia: Guia;
 }
 
-/**
- * Componente puro de visualización de una guía.
- * Renderiza el encabezado estilo "ficha técnica MEN" y cada bloque de contenido.
- */
+
 export const GuiaRenderer = ({ guia }: GuiaRendererProps) => (
   <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8 border-t-4 border-olive font-public">
     {/* Encabezado tipo ficha técnica */}

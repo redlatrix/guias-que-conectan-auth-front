@@ -28,11 +28,7 @@ export const guiaService = {
     return data;
   },
 
-  /**
-   * Workaround: el core no tiene GET /guias/:id todavía.
-   * Carga la lista del docente y busca por id.
-   * Reemplazar con `coreApi.get<Guia>(\`/guias/\${id}\`)` cuando esté disponible.
-   */
+
   getGuia: async (id: number): Promise<Guia> => {
     const { data } = await coreApi.get<Guia[]>('/guias/mis-guias');
     const found = data.find((g) => g.id === id);

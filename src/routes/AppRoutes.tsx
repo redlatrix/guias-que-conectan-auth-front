@@ -13,16 +13,14 @@ import { GuiaDetallePage } from '@/pages/GuiaDetallePage';
 export const AppRoutes = () => {
   return (
     <Routes>
-      {/* Página de aterrizaje pública */}
+
       <Route path="/" element={<LandingPage />} />
 
-      {/* Rutas Públicas */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/explorar" element={<ExplorarGuiasPage />} />
       <Route path="/explorar/:id" element={<ExplorarGuiaDetallePage />} />
 
-      {/* Rutas Protegidas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/generar" element={<GeneradorPage />} />
