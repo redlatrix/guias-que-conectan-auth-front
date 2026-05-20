@@ -4,6 +4,7 @@ import { PiFilePdfBold } from 'react-icons/pi';
 interface PrintButtonProps {
   contentRef: RefObject<HTMLDivElement | null>;
   documentTitle?: string;
+  label?: string;
 }
 
 /**
@@ -11,7 +12,7 @@ interface PrintButtonProps {
  * "Imprimir / Guardar PDF". Usa window.open + innerHTML para preservar
  * todos los estilos inline de ActividadImprimible sin iframes en la misma página.
  */
-export const PrintButton = ({ contentRef, documentTitle = 'Actividad Imprimible' }: PrintButtonProps) => {
+export const PrintButton = ({ contentRef, documentTitle = 'Actividad Imprimible', label = 'Actividad PDF' }: PrintButtonProps) => {
   const handleOpen = () => {
     const element = contentRef.current;
     if (!element) return;
@@ -74,7 +75,7 @@ export const PrintButton = ({ contentRef, documentTitle = 'Actividad Imprimible'
       title="Abrir actividad del estudiante en nueva pestaña"
     >
       <PiFilePdfBold className="text-red-600 text-2xl" />
-      Actividad PDF
+      {label}
     </button>
   );
 };

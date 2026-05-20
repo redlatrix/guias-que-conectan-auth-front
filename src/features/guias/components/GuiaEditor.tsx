@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { GuiaBlock } from './GuiaBlock';
 import { ActividadImprimible } from './ActividadImprimible';
+import { GuiaDocenteImprimible } from './GuiaDocenteImprimible';
 import { PrintButton } from './PrintButton';
 import { guiaService } from '../api/guia.api';
 import type { Guia, BloqueContenido, MetadataImagen } from '../types/guia.types';
@@ -30,7 +31,8 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   const [regeneratingIdx, setRegeneratingIdx] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'docente' | 'estudiante'>('docente');
 
-  const printRef = useRef<HTMLDivElement>(null);
+  const printRef        = useRef<HTMLDivElement>(null);
+  const printDocenteRef = useRef<HTMLDivElement>(null);
 
   // ── Imagen ilustrativa ─────────────────────────────────────────────────────
   const imageBlockIndex = blocks.findIndex((b) => b.tipo === 'imagen');
@@ -230,6 +232,13 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
               })}
             </div>
 
+            <div className="hidden">
+              <GuiaDocenteImprimible
+                ref={printDocenteRef}
+                allBlocks={blocks}
+                titulo={titulo}
+              />
+            </div>
           </>
         )}
 
@@ -290,10 +299,19 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
             </span>
           )}
 
+          {activeTab === 'docente' && (
+            <PrintButton
+              contentRef={printDocenteRef}
+              documentTitle={`Guía del Docente — ${titulo}`}
+              label="Guía PDF"
+            />
+          )}
+
           {hasActividadImprimible && activeTab === 'estudiante' && (
             <PrintButton
               contentRef={printRef}
               documentTitle={`Actividad — ${titulo}`}
+              label="Actividad PDF"
             />
           )}
 
