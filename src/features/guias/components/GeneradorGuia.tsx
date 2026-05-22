@@ -7,17 +7,13 @@ import { GuiaEditor } from './GuiaEditor';
 import { DbaDropdown } from './DbaDropdown';
 import type { Step1FormData, Step2FormData, BloqueContenido } from '../types/guia.types';
 
-// ── Helpers de UI ─────────────────────────────────────────────────────────────
-
 const selectClass =
-  'w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-public bg-white outline-none focus:border-copper focus:ring-1 focus:ring-copper transition disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed';
+  'w-full border border-gray-300 rounded-lg px-4 py-3 text-base font-public bg-white outline-none focus:border-copper focus:ring-1 focus:ring-copper transition disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed';
 
-const labelClass = 'block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5 font-public';
+const labelClass = 'block text-sm font-semibold text-gray-500 uppercase tracking-widest mb-1.5 font-public';
 
 const inputClass =
-  'w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-public bg-white outline-none focus:border-copper focus:ring-1 focus:ring-copper transition';
-
-// ── Componente principal ──────────────────────────────────────────────────────
+  'w-full border border-gray-300 rounded-lg px-4 py-3 text-base font-public bg-white outline-none focus:border-copper focus:ring-1 focus:ring-copper transition';
 
 export const GeneradorGuia = () => {
   const [step, setStep] = useState<1 | 2>(1);
@@ -116,7 +112,7 @@ export const GeneradorGuia = () => {
 
   // ── Formulario ─────────────────────────────────────────────────────────────
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl lg:max-w-4xl mx-auto">
       {/* Título del flujo */}
       <div className="mb-8">
         <h2 className="font-crimson text-3xl font-bold text-olive mb-1">Crear nueva guía</h2>

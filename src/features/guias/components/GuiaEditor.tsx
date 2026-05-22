@@ -5,6 +5,8 @@ import { GuiaDocenteImprimible } from './GuiaDocenteImprimible';
 import { PrintButton } from './PrintButton';
 import { guiaService } from '../api/guia.api';
 import type { Guia, BloqueContenido, MetadataImagen } from '../types/guia.types';
+import { buildImageUrl } from '../utils/buildImageUrl';
+import { FaListCheck, FaGraduationCap } from "react-icons/fa6";
 
 interface GuiaEditorProps {
   guia: Guia;
@@ -13,12 +15,6 @@ interface GuiaEditorProps {
   onSave: (titulo: string, contenido_json: BloqueContenido[]) => void;
   onPublish?: () => void;
 }
-
-const buildImageUrl = (url: string): string => {
-  if (url.startsWith('http')) return url;
-  const base = (import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api').replace(/\/api$/, '');
-  return `${base}${url}`;
-};
 
 const ACTIVIDAD_MARKER = 'ACTIVIDAD PRÁCTICA IMPRIMIBLE';
 
@@ -31,15 +27,15 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   const [regeneratingIdx, setRegeneratingIdx] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'docente' | 'estudiante'>('docente');
 
-  const printRef        = useRef<HTMLDivElement>(null);
+  const printRef = useRef<HTMLDivElement>(null);
   const printDocenteRef = useRef<HTMLDivElement>(null);
 
   // ── Imagen ilustrativa ─────────────────────────────────────────────────────
   const imageBlockIndex = blocks.findIndex((b) => b.tipo === 'imagen');
-  const imageBlock      = imageBlockIndex >= 0 ? blocks[imageBlockIndex] : null;
-  const imageMeta       = imageBlock ? (imageBlock.metadata as unknown as MetadataImagen) : null;
+  const imageBlock = imageBlockIndex >= 0 ? blocks[imageBlockIndex] : null;
+  const imageMeta = imageBlock ? (imageBlock.metadata as unknown as MetadataImagen) : null;
 
-  const actividadStartIdx    = blocks.findIndex((b) => b.contenido.includes(ACTIVIDAD_MARKER));
+  const actividadStartIdx = blocks.findIndex((b) => b.contenido.includes(ACTIVIDAD_MARKER));
   const hasActividadImprimible = actividadStartIdx >= 0;
 
 
@@ -56,8 +52,8 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   };
 
   const handleRegenerateImage = async (i: number) => {
-    const block  = blocks[i];
-    const meta   = block.metadata as unknown as MetadataImagen;
+    const block = blocks[i];
+    const meta = block.metadata as unknown as MetadataImagen;
     const prompt = meta.alt || block.contenido.replace(/^!\[([^\]]*)\].*$/, '$1');
     if (!prompt) return;
 
@@ -74,7 +70,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
       );
       await onSave(titulo, updatedBlocks);
     } catch {
-      // silencioso — mantiene imagen anterior
     } finally {
       setRegeneratingIdx(null);
     }
@@ -115,8 +110,8 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
           {regeneratingIdx === imageBlockIndex ? (
             <>
               <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
               Generando…
             </>
@@ -133,8 +128,7 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
     ) : null;
 
   return (
-    <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md border-t-4 border-copper font-public">
-
+    <article className="max-w-6xl mx-auto bg-white rounded-2xl shadow-md border-t-4 border-copper font-public">
       <header className="px-8 pt-8 pb-5 border-b border-gray-100">
         <p className="text-xs text-gray-400 uppercase tracking-widest font-public mb-1">
           Editando · Versión {guia.version_numero}
@@ -147,11 +141,11 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
               onChange={(e) => setTitulo(e.target.value)}
               onBlur={() => setEditingTitle(false)}
               onKeyDown={(e) => e.key === 'Enter' && setEditingTitle(false)}
-              className="flex-1 font-crimson text-3xl font-bold text-olive border-b-2 border-copper outline-none bg-transparent leading-tight"
+              className="flex-1 font-crimson text-4xl font-bold text-olive border-b-2 border-copper outline-none bg-transparent leading-tight"
             />
           ) : (
             <h1
-              className="flex-1 font-crimson text-3xl font-bold text-olive leading-tight cursor-pointer hover:text-copper transition"
+              className="flex-1 font-crimson text-4xl font-bold text-olive leading-tight cursor-pointer hover:text-copper transition"
               title="Haz clic para editar el título"
               onClick={() => setEditingTitle(true)}
             >
@@ -169,9 +163,8 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
           </button>
         </div>
         <div className="flex flex-wrap items-center gap-3 mt-3">
-          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full font-public uppercase tracking-wide ${
-            esPublicada ? 'bg-olive/10 text-olive' : 'bg-amber/20 text-amber'
-          }`}>
+          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full font-public uppercase tracking-wide ${esPublicada ? 'bg-olive/10 text-olive' : 'bg-amber/20 text-amber'
+            }`}>
             {guia.estado}
           </span>
           <span className="text-xs text-gray-400 font-public">
@@ -184,23 +177,38 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
 
       {/* ── Tabs ──────────────────────────────────────────────────────────────── */}
       {hasActividadImprimible && (
-        <div className="flex px-8 border-b border-gray-100">
+        /* El contenedor padre ahora tiene un fondo gris suave, padding interno y bordes redondeados */
+        <div className="flex p-1.5 bg-gray-100 rounded-xl border border-gray-200/60 max-w-4xl mx-auto my-4">
           {([
-            { key: 'docente',    label: '📋 Guía del docente' },
-            { key: 'estudiante', label: '🎓 Actividad del estudiante' },
-          ] as const).map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setActiveTab(key)}
-              className={`px-4 py-3 text-sm font-semibold font-public border-b-2 -mb-px transition ${
-                activeTab === key
-                  ? 'border-copper text-copper'
-                  : 'border-transparent text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+            { key: 'docente', label: 'Guía del docente', icon: <FaListCheck className="w-5 h-5" /> },
+            { key: 'estudiante', label: 'Actividad del estudiante', icon: <FaGraduationCap className="w-6 h-6" /> },
+          ] as const).map(({ key, label, icon }) => {
+            const isActive = activeTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+    
+                className={`flex-1 py-4 text-xl font-bold font-public rounded-lg transition-all flex items-center justify-center gap-3 relative ${isActive
+                    ? 'bg-white text-orange-500 shadow-sm border border-gray-200/40'
+                    : 'text-gray-500 hover:text-olive hover:bg-gray-50/50'
+                  }`}
+              >
+                {/* El puntito indicador de la izquierda (como el de tu imagen de referencia) */}
+                {isActive && (
+                  <span className="w-2 h-2 rounded-full bg-orange-500 absolute left-6 animate-ping  " />
+                )}
+
+                {/* Icono */}
+                <span className={isActive ? 'text-orange-500' : 'text-gray-400'}>
+                  {icon}
+                </span>
+
+                {/* Texto */}
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -340,8 +348,8 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
               {isPublishing ? (
                 <>
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                   </svg>
                   Publicando...
                 </>

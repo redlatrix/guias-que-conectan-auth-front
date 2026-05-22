@@ -1,15 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
+import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const { user, clearAuth } = useAuth();
-
-  const handleLogout = () => {
-    clearAuth();
-    navigate('/login');
-  };
+  const { user } = useAuth();
 
   const rolLabel: Record<string, string> = {
     docente: 'Docente',
@@ -18,24 +12,7 @@ export const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-cream font-public">
-      {/* Header */}
-      <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <GlobeIcon size={36} />
-          <div>
-            <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
-              Guias que
-            </p>
-            <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
-          </div>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
-        >
-          Cerrar sesión
-        </button>
-      </header>
+      <AuthNavbar />
 
       <main className="max-w-3xl mx-auto px-4 py-10">
         {/* Tarjeta bienvenida */}
@@ -76,10 +53,10 @@ export const Dashboard = () => {
             <p className="font-crimson text-xl font-semibold text-gray-700">
               {user?.ultimo_login
                 ? new Date(user.ultimo_login).toLocaleDateString('es-CO', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                  })
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })
                 : 'Primera sesión'}
             </p>
           </div>

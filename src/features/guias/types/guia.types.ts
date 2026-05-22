@@ -62,6 +62,10 @@ export interface Guia {
   contenido_json: BloqueContenido[];
   creado_en: string;
   actualizado_en?: string;
+  docente_nombre?: string;
+  grado_nombre?: string;
+  grado_numero?: number;
+  area?: string;
 }
 
 export interface CreateSesionPayload {

@@ -42,7 +42,7 @@ export const ExplorarGuiaDetallePage = () => {
         </Link>
       </header>
 
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-10">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-gray-400 font-public mb-6">
           <Link to="/explorar" className="hover:text-copper transition">
@@ -85,7 +85,7 @@ export const ExplorarGuiaDetallePage = () => {
                   v{guia.version_numero}
                 </span>
               </div>
-              <h1 className="font-crimson text-3xl font-bold text-olive leading-tight mb-2">
+              <h1 className="font-crimson text-4xl font-bold text-olive leading-tight mb-2">
                 {guia.titulo}
               </h1>
               {guia.creado_en && (

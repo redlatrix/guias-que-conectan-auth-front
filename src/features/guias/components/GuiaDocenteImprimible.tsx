@@ -2,14 +2,9 @@ import { forwardRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ActividadImprimibleProps, MetadataImagen } from '../types/guia.types';
+import { buildImageUrl } from '../utils/buildImageUrl';
 
 const ACTIVIDAD_MARKER = 'ACTIVIDAD PRÁCTICA IMPRIMIBLE';
-
-const buildImageUrl = (url: string): string => {
-  if (!url || url.startsWith('http')) return url;
-  const base = (import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api').replace(/\/api$/, '');
-  return `${base}${url}`;
-};
 
 /**
  * Versión imprimible de la guía del docente.
@@ -32,7 +27,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
       <div
         ref={ref}
         className="guia-docente-imprimible bg-white font-public text-gray-900"
-        style={{ padding: '0', maxWidth: '180mm', margin: '0 auto', fontSize: '11pt', lineHeight: '1.65' }}
+        style={{ padding: '0', maxWidth: '180mm', margin: '0 auto', fontSize: '12pt', lineHeight: '1.65' }}
       >
 
         {/* ══ CABECERA ══════════════════════════════════════════════════════════ */}
@@ -73,7 +68,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                   h2: ({ children }) => (
                     <h2 style={{
                       fontFamily: 'Crimson Pro, Georgia, serif',
-                      fontSize: '14pt',
+                      fontSize: '15pt',
                       fontWeight: '700',
                       color: '#3a3a2a',
                       marginTop: '22px',
@@ -89,7 +84,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                   h3: ({ children }) => (
                     <h3 style={{
                       fontFamily: 'inherit',
-                      fontSize: '11pt',
+                      fontSize: '12pt',
                       fontWeight: '700',
                       color: '#222',
                       marginTop: '14px',
@@ -100,7 +95,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                   ),
 
                   p: ({ children }) => (
-                    <p style={{ margin: '0 0 6px 0', lineHeight: '1.65', fontSize: '10.5pt' }}>
+                    <p style={{ margin: '0 0 6px 0', lineHeight: '1.65', fontSize: '11.5pt' }}>
                       {children}
                     </p>
                   ),
@@ -117,7 +112,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                   ),
 
                   table: ({ children }) => (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10pt', marginTop: '10px', marginBottom: '10px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11pt', marginTop: '10px', marginBottom: '10px' }}>
                       {children}
                     </table>
                   ),
@@ -125,12 +120,12 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                     <thead style={{ borderBottom: '2px solid #333' }}>{children}</thead>
                   ),
                   th: ({ children }) => (
-                    <th style={{ padding: '6px 10px', textAlign: 'left', fontWeight: '700', fontSize: '9.5pt', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '2px solid #333' }}>
+                    <th style={{ padding: '6px 10px', textAlign: 'left', fontWeight: '700', fontSize: '10.5pt', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '2px solid #333' }}>
                       {children}
                     </th>
                   ),
                   td: ({ children }) => (
-                    <td style={{ padding: '8px 10px', borderBottom: '1px solid #ccc', fontSize: '10pt', verticalAlign: 'top' }}>
+                    <td style={{ padding: '8px 10px', borderBottom: '1px solid #ccc', fontSize: '11pt', verticalAlign: 'top' }}>
                       {children}
                     </td>
                   ),
@@ -142,7 +137,7 @@ export const GuiaDocenteImprimible = forwardRef<HTMLDivElement, ActividadImprimi
                     <ol style={{ paddingLeft: '20px', margin: '4px 0 8px 0' }}>{children}</ol>
                   ),
                   li: ({ children }) => (
-                    <li style={{ marginBottom: '3px', lineHeight: '1.6', fontSize: '10.5pt' }}>{children}</li>
+                    <li style={{ marginBottom: '3px', lineHeight: '1.6', fontSize: '11.5pt' }}>{children}</li>
                   ),
                 }}
               >

@@ -5,16 +5,7 @@ import type {
   MetadataImagen,
   MetadataActividad,
 } from '../types/guia.types';
-
-/**
- * Construye la URL completa para imágenes del backend.
- * El storage devuelve paths como "/storage/images/uuid.png"
- */
-const buildImageUrl = (url: string): string => {
-  if (url.startsWith('http')) return url;
-  const base = (import.meta.env.VITE_CORE_API_URL ?? 'http://localhost:3001/api').replace(/\/api$/, '');
-  return `${base}${url}`;
-};
+import { buildImageUrl } from '../utils/buildImageUrl';
 
 interface GuiaBlockProps {
   block: BloqueContenido;
@@ -134,7 +125,7 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
             onChange={(e) => onContentChange?.(e.target.value)}
           />
         ) : (
-          <div className="prose prose-sm prose-stone max-w-none font-public text-gray-800">
+          <div className="prose prose-stone max-w-none font-public text-gray-800">
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
               hr: () => <div style={{ borderBottom: '1px solid #d1d5db', margin: '4px 0 8px 0' }} />,
             }}>{block.contenido}</ReactMarkdown>
@@ -160,7 +151,7 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
             onChange={(e) => onContentChange?.(e.target.value)}
           />
         ) : (
-          <div className="prose prose-sm prose-stone max-w-none font-public text-gray-800">
+          <div className="prose prose-stone max-w-none font-public text-gray-800">
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
               hr: () => <div style={{ borderBottom: '1px solid #d1d5db', margin: '4px 0 8px 0' }} />,
             }}>{block.contenido}</ReactMarkdown>

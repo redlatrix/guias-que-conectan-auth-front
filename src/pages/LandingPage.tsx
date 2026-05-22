@@ -1,18 +1,12 @@
 import { Link } from 'react-router-dom';
 import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
+import { FaArrowRight } from "react-icons/fa6";
 
 const CheckIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
   </svg>
 );
-
-const ArrowRightIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-  </svg>
-);
-
 
 const PublicNavbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 bg-olive px-6 py-3 flex items-center justify-between shadow-sm">
@@ -28,12 +22,6 @@ const PublicNavbar = () => (
       </div>
     </div>
     <div className="flex items-center gap-3">
-      <Link
-        to="/explorar"
-        className="text-cream/80 hover:text-cream text-sm font-public transition"
-      >
-        Explorar guías
-      </Link>
       <Link
         to="/login"
         className="text-cream text-sm font-public font-semibold bg-copper hover:bg-copper-dark px-4 py-1.5 rounded-md transition"
@@ -86,7 +74,7 @@ export const LandingPage = () => {
               to="/explorar"
               className="font-public font-semibold px-7 py-3 rounded-lg bg-copper hover:bg-copper-dark text-cream transition flex items-center gap-2"
             >
-              Explorar guías <ArrowRightIcon />
+              Explorar guías <FaArrowRight />
             </Link>
           </div>
         </div>
@@ -224,7 +212,7 @@ export const LandingPage = () => {
               to="/explorar"
               className="font-public font-semibold px-7 py-3 rounded-lg border-2 border-cream/40 text-cream hover:bg-cream/10 transition flex items-center gap-2"
             >
-              Ver guías publicadas <ArrowRightIcon />
+              Ver guías publicadas <FaArrowRight />
             </Link>
           </div>
         </div>

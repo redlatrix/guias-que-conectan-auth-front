@@ -20,7 +20,7 @@ export const SkeletonGuia = () => {
   }, []);
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto py-8">
+    <div className="space-y-6 max-w-3xl lg:max-w-5xl mx-auto py-8">
       {/* Mensaje de estado — arriba, visible */}
       <div className="bg-olive/10 border border-olive/20 rounded-xl px-5 py-4 flex items-center gap-3">
         <svg

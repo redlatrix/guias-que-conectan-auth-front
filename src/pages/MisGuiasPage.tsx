@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 import { useGuias } from '@/features/guias/hooks/useGuias';
 import { GuiaCard } from '@/features/guias/components/GuiaCard';
+import { useAuthStore } from '@/store/auth.store';
+import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
 
 
 const SkeletonCard = () => (
@@ -20,61 +20,24 @@ const SkeletonCard = () => (
 
 export const MisGuiasPage = () => {
   const navigate = useNavigate();
-  const { clearAuth } = useAuth();
   const { guias, isLoadingList, error, loadMisGuias } = useGuias();
+  const user = useAuthStore((s) => s.user);
+  const docenteNombre = user?.docente?.nombre;
 
   useEffect(() => {
     loadMisGuias();
   }, []);
 
-  const handleLogout = () => {
-    clearAuth();
-    navigate('/login');
-  };
-
   return (
     <div className="min-h-screen bg-cream font-public">
-      {/* Header */}
-      <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-6">
-          <Link to="/dashboard" className="flex items-center gap-3">
-            <GlobeIcon size={36} />
-            <div>
-              <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
-                Guias que
-              </p>
-              <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
-            </div>
-          </Link>
-          <nav className="hidden sm:flex items-center gap-4">
-            <Link
-              to="/generar"
-              className="text-cream/70 hover:text-cream text-sm font-public transition"
-            >
-              Nueva Guía
-            </Link>
-            <Link
-              to="/mis-guias"
-              className="text-cream text-sm font-public font-semibold border-b-2 border-cream/70 pb-0.5"
-            >
-              Mis Guías
-            </Link>
-          </nav>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
-        >
-          Cerrar sesión
-        </button>
-      </header>
+      <AuthNavbar />
 
-      <main className="max-w-4xl mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-6 py-10">
 
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-crimson text-3xl font-bold text-olive">Mis Guías</h1>
-            <p className="text-sm text-gray-500 font-public mt-1">
+            <h1 className="font-crimson text-4xl font-bold text-olive">Mis Guías</h1>
+            <p className="text-base text-gray-500 font-public mt-1">
               {isLoadingList
                 ? 'Cargando tus guías...'
                 : `${guias.length} guía${guias.length !== 1 ? 's' : ''} encontrada${guias.length !== 1 ? 's' : ''}`}
@@ -126,6 +89,7 @@ export const MisGuiasPage = () => {
                 key={guia.id}
                 guia={guia}
                 onClick={() => navigate(`/guias/${guia.id}`)}
+                docenteNombre={docenteNombre}
               />
             ))}
           </div>

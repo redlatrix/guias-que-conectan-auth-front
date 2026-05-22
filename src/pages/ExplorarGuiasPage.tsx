@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 import { guiaService } from '@/features/guias/api/guia.api';
 import type { Guia } from '@/features/guias/types/guia.types';
+import { buildImageUrl } from '@/features/guias/utils/buildImageUrl';
 
 export const ExplorarGuiasPage = () => {
   const navigate = useNavigate();
@@ -46,10 +47,10 @@ export const ExplorarGuiasPage = () => {
 
       {/* Hero */}
       <div className="bg-olive/10 border-b border-olive/20 px-6 py-10 text-center">
-        <h1 className="font-crimson text-4xl font-bold text-olive mb-3">
+        <h1 className="font-crimson text-5xl font-bold text-olive mb-3">
           Explorar guías de aprendizaje
         </h1>
-        <p className="text-gray-500 text-sm max-w-xl mx-auto mb-6">
+        <p className="text-gray-500 text-base max-w-xl mx-auto mb-6">
           Guías de Ciencias Sociales alineadas con los DBA del MEN, creadas por docentes colombianos.
         </p>
         <div className="max-w-md mx-auto relative">
@@ -74,7 +75,7 @@ export const ExplorarGuiasPage = () => {
       </div>
 
       {/* Contenido */}
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-10">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(6)].map((_, i) => (
@@ -134,10 +135,16 @@ export const ExplorarGuiasPage = () => {
 // ── Tarjeta de guía pública ──────────────────────────────────────────────────
 
 const GuiaPublicaCard = ({ guia, onClick }: { guia: Guia; onClick: () => void }) => {
-  const bloqueTexto = guia.contenido_json?.find((b) => b.tipo === 'texto');
-  const preview = bloqueTexto
-    ? bloqueTexto.contenido.replace(/[#*>`]/g, '').trim().slice(0, 120)
+  const gradoLabel = guia.grado_nombre
+    ?? guia.titulo.split('—').pop()?.trim()
+    ?? '';
+
+  const imageBlock = guia.contenido_json?.find((b) => b.tipo === 'imagen');
+  const imageUrl = imageBlock
+    ? (imageBlock.metadata as { url?: string })?.url ?? null
     : null;
+
+  const descripcion = guia.titulo;
 
   const fecha = guia.creado_en
     ? new Date(guia.creado_en).toLocaleDateString('es-CO', {
@@ -147,30 +154,63 @@ const GuiaPublicaCard = ({ guia, onClick }: { guia: Guia; onClick: () => void })
       })
     : null;
 
+    console.log(guia ,'dataaa')
   return (
     <button
       onClick={onClick}
-      className="text-left bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-copper/30 transition-all p-5 flex flex-col gap-3 w-full"
+      className="text-left w-full bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-copper/30 transition-all group overflow-hidden flex flex-col"
     >
-      {/* Cabecera */}
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="font-crimson text-lg font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:text-copper">
-          {guia.titulo}
-        </h3>
-        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider bg-olive/10 text-olive px-2 py-0.5 rounded-full">
-          Publicada
-        </span>
+      {/* Cover image */}
+      <div className="w-full h-36 bg-olive/5 flex items-center justify-center overflow-hidden">
+        {imageUrl ? (
+          <img
+            src={buildImageUrl(imageUrl)}
+            alt="Portada de la guía"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-olive/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        )}
       </div>
 
-      {/* Preview de contenido */}
-      {preview && (
-        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">{preview}…</p>
-      )}
+      <div className="p-5 flex flex-col flex-1 gap-2">
+        {/* Status badge + grade */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full font-public uppercase tracking-wide bg-olive/10 text-olive">
+            Publicada
+          </span>
+          {gradoLabel && (
+            <span className="text-xs text-gray-500 font-public font-medium">
+              {guia.grado_numero ? `${guia.grado_numero}°` : ''} {gradoLabel}
+            </span>
+          )}
+        </div>
 
-      {/* Footer de la tarjeta */}
-      <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-50">
-        {fecha && <span className="text-[11px] text-gray-400">{fecha}</span>}
-        <span className="text-[11px] text-copper/60 ml-auto">Ver guía →</span>
+        {/* Description */}
+        {descripcion && (
+          <p className="text-sm text-gray-600 font-public leading-relaxed line-clamp-2 group-hover:text-gray-800 transition-colors">
+            {descripcion}
+          </p>
+        )}
+
+        {/* Footer: teacher + date */}
+        <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3 min-w-0">
+            
+            {guia.docente_nombre && (
+              <span className="text-xs text-gray-500 font-public truncate flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {guia.docente_nombre}
+              </span>
+            )}
+            {fecha && <span className="text-xs text-gray-400 shrink-0">{fecha}</span>}
+          </div>
+          <span className="text-xs text-copper/60 shrink-0 font-semibold group-hover:text-copper transition-colors">Ver guía →</span>
+        </div>
       </div>
     </button>
   );
