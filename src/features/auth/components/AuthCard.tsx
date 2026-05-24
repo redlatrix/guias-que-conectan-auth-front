@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { GlobeIcon } from './GlobeIcon';
 
 interface AuthCardProps {
   title: string;
