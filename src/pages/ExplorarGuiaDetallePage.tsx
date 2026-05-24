@@ -5,6 +5,7 @@ import { guiaService } from '@/features/guias/api/guia.api';
 import { GuiaBlock } from '@/features/guias/components/GuiaBlock';
 import { SkeletonGuia } from '@/features/guias/components/SkeletonGuia';
 import type { Guia } from '@/features/guias/types/guia.types';
+import { GuiaViewer } from '@/features/guias/components/GuiaViewer';
 
 export const ExplorarGuiaDetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -74,9 +75,8 @@ export const ExplorarGuiaDetallePage = () => {
         )}
 
         {guia && !isLoading && (
-          <article className="bg-white rounded-2xl shadow-md p-8 border-t-4 border-copper">
-            {/* Encabezado */}
-            <header className="mb-6 pb-5 border-b border-gray-100">
+          <article className="bg-white rounded-2xl shadow-md border-t-4 border-copper">
+            <header className="px-8 pt-8 pb-5 border-b border-gray-100">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] font-semibold uppercase tracking-wider bg-olive/10 text-olive px-2.5 py-0.5 rounded-full font-public">
                   Publicada
@@ -91,36 +91,18 @@ export const ExplorarGuiaDetallePage = () => {
               {guia.creado_en && (
                 <p className="text-xs text-gray-400 font-public">
                   {new Date(guia.creado_en).toLocaleDateString('es-CO', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
+                    day: '2-digit', month: 'long', year: 'numeric',
                   })}
                 </p>
               )}
             </header>
 
-            {/* Bloques de contenido — solo lectura */}
-            <div className="space-y-4">
-              {guia.contenido_json.map((block, i) => (
-                <GuiaBlock key={i} block={block} />
-              ))}
-            </div>
-
-            {/* Footer */}
-            <div className="mt-10 pt-6 border-t border-gray-100 flex items-center justify-between flex-wrap gap-4">
-              <Link
-                to="/explorar"
-                className="text-sm text-gray-400 hover:text-copper font-public transition flex items-center gap-1"
-              >
-                ← Volver al explorador
-              </Link>
-              <Link
-                to="/register"
-                className="bg-copper hover:bg-copper-dark text-white text-sm font-public font-semibold px-5 py-2 rounded-lg transition"
-              >
-                Crear mi propia guía
-              </Link>
-            </div>
+            {/* 👇 Tabs + contenido + botones PDF, todo readonly */}
+            <GuiaViewer
+              titulo={guia.titulo}
+              blocks={guia.contenido_json}
+              isReadOnly={true}
+            />
           </article>
         )}
       </main>
