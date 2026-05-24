@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
+import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { guiaService } from '@/features/guias/api/guia.api';
 import type { Guia } from '@/features/guias/types/guia.types';
 import { buildImageUrl } from '@/features/guias/utils/buildImageUrl';
 
 export const ExplorarGuiasPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [guias, setGuias] = useState<Guia[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,24 +29,28 @@ export const ExplorarGuiasPage = () => {
 
   return (
     <div className="min-h-screen bg-cream flex flex-col font-public">
-      {/* Navbar */}
-      <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <GlobeIcon size={36} />
-          <div>
-            <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
-              Guias que
-            </p>
-            <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
+      {/* Navbar — si está logueado muestra AuthNavbar, si no el público */}
+      {isAuthenticated ? (
+        <AuthNavbar />
+      ) : (
+        <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <GlobeIcon size={36} />
+            <div>
+              <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
+                Guias que
+              </p>
+              <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
+            </div>
           </div>
-        </div>
-        <Link
-          to="/login"
-          className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
-        >
-          Iniciar sesión
-        </Link>
-      </header>
+          <Link
+            to="/login"
+            className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
+          >
+            Iniciar sesión
+          </Link>
+        </header>
+      )}
 
       {/* Hero */}
       <div className="bg-olive/10 border-b border-olive/20 px-6 py-10 text-center">
@@ -154,7 +161,6 @@ const GuiaPublicaCard = ({ guia, onClick }: { guia: Guia; onClick: () => void })
       })
     : null;
 
-    console.log(guia ,'dataaa')
   return (
     <button
       onClick={onClick}

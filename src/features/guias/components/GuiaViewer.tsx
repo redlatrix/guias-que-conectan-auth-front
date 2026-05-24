@@ -205,21 +205,25 @@ export const GuiaViewer = ({
                 {/* Solo para editor (!isReadOnly) */}
                 {!isReadOnly && (
                     <>
-                        {activeTab === 'docente' && (
-                            <PrintButton
-                                contentRef={printDocenteRef}
-                                documentTitle={`Guía del Docente — ${titulo}`}
-                                label="Guía PDF"
-                            />
-                        )}
-                        {hasActividadImprimible && activeTab === 'estudiante' && (
-                            <PrintButton
-                                contentRef={printRef}
-                                documentTitle={`Actividad — ${titulo}`}
-                                label="Actividad PDF"
-                            />
-                        )}
-                        {footerActions}
+                        <div className="flex items-center gap-3">
+                            {activeTab === 'docente' && (
+                                <PrintButton
+                                    contentRef={printDocenteRef}
+                                    documentTitle={`Guía del Docente — ${titulo}`}
+                                    label="Guía PDF"
+                                />
+                            )}
+                            {hasActividadImprimible && activeTab === 'estudiante' && (
+                                <PrintButton
+                                    contentRef={printRef}
+                                    documentTitle={`Actividad — ${titulo}`}
+                                    label="Actividad PDF"
+                                />
+                            )}
+                        </div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                            {footerActions}
+                        </div>
                     </>
                 )}
             </div>

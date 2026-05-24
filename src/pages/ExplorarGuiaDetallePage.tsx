@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
+import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { guiaService } from '@/features/guias/api/guia.api';
-import { GuiaBlock } from '@/features/guias/components/GuiaBlock';
 import { SkeletonGuia } from '@/features/guias/components/SkeletonGuia';
 import type { Guia } from '@/features/guias/types/guia.types';
 import { GuiaViewer } from '@/features/guias/components/GuiaViewer';
 
 export const ExplorarGuiaDetallePage = () => {
   const { id } = useParams<{ id: string }>();
+  const { isAuthenticated } = useAuth();
   const [guia, setGuia] = useState<Guia | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -24,24 +26,28 @@ export const ExplorarGuiaDetallePage = () => {
 
   return (
     <div className="min-h-screen bg-cream flex flex-col font-public">
-      {/* Navbar */}
-      <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
-        <Link to="/explorar" className="flex items-center gap-3">
-          <GlobeIcon size={36} />
-          <div>
-            <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
-              Guias que
-            </p>
-            <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
-          </div>
-        </Link>
-        <Link
-          to="/login"
-          className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
-        >
-          Iniciar sesión
-        </Link>
-      </header>
+      {/* Navbar — si está logueado muestra AuthNavbar, si no el público */}
+      {isAuthenticated ? (
+        <AuthNavbar />
+      ) : (
+        <header className="bg-olive px-6 py-4 flex items-center justify-between shadow-md">
+          <Link to="/explorar" className="flex items-center gap-3">
+            <GlobeIcon size={36} />
+            <div>
+              <p className="text-cream font-crimson font-bold text-base tracking-widest uppercase leading-none">
+                Guias que
+              </p>
+              <p className="text-cream/70 text-[10px] tracking-[0.3em] uppercase">Conectan</p>
+            </div>
+          </Link>
+          <Link
+            to="/login"
+            className="text-cream/80 hover:text-cream text-sm font-public border border-cream/30 hover:border-cream/70 px-4 py-1.5 rounded-md transition"
+          >
+            Iniciar sesión
+          </Link>
+        </header>
+      )}
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
         {/* Breadcrumb */}

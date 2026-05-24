@@ -1,12 +1,6 @@
-import { useState, useRef } from 'react';
-import { GuiaBlock } from './GuiaBlock';
-import { ActividadImprimible } from './ActividadImprimible';
-import { GuiaDocenteImprimible } from './GuiaDocenteImprimible';
-import { PrintButton } from './PrintButton';
+import { useState } from 'react';
 import { guiaService } from '../api/guia.api';
 import type { Guia, BloqueContenido, MetadataImagen } from '../types/guia.types';
-import { buildImageUrl } from '../utils/buildImageUrl';
-import { FaListCheck, FaGraduationCap } from "react-icons/fa6";
 import { GuiaViewer } from './GuiaViewer';
 
 interface GuiaEditorProps {
@@ -17,8 +11,6 @@ interface GuiaEditorProps {
   onPublish?: () => void;
 }
 
-const ACTIVIDAD_MARKER = 'ACTIVIDAD PRÁCTICA IMPRIMIBLE';
-
 export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: GuiaEditorProps) => {
   const [titulo, setTitulo] = useState(guia.titulo);
   const [blocks, setBlocks] = useState<BloqueContenido[]>(guia.contenido_json);
@@ -26,18 +18,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   const [editingTitle, setEditingTitle] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [regeneratingIdx, setRegeneratingIdx] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'docente' | 'estudiante'>('docente');
-
-  const printRef = useRef<HTMLDivElement>(null);
-  const printDocenteRef = useRef<HTMLDivElement>(null);
-
-  // ── Imagen ilustrativa ─────────────────────────────────────────────────────
-  const imageBlockIndex = blocks.findIndex((b) => b.tipo === 'imagen');
-  const imageBlock = imageBlockIndex >= 0 ? blocks[imageBlockIndex] : null;
-  const imageMeta = imageBlock ? (imageBlock.metadata as unknown as MetadataImagen) : null;
-
-  const actividadStartIdx = blocks.findIndex((b) => b.contenido.includes(ACTIVIDAD_MARKER));
-  const hasActividadImprimible = actividadStartIdx >= 0;
 
 
   const toggleBlock = (i: number) => {
@@ -84,49 +64,6 @@ export const GuiaEditor = ({ guia, isSaving, isPublishing, onSave, onPublish }: 
   };
 
   const esPublicada = guia.estado === 'publicado';
-
-
-  const ImageThumbnail = () =>
-    imageBlock && imageMeta?.url ? (
-      <div className="flex items-center gap-4 py-3 px-4 bg-gray-50/80 rounded-xl border border-dashed border-gray-200">
-        <img
-          src={buildImageUrl(imageMeta.url)}
-          alt={imageMeta.alt ?? 'Imagen de la guía'}
-          className="w-16 h-16 rounded-lg object-cover shadow-sm shrink-0 border border-gray-100"
-        />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-700 font-public leading-tight truncate">
-            {imageMeta.alt ?? 'Imagen ilustrativa del tema'}
-          </p>
-          <p className="text-xs text-gray-400 font-public mt-0.5">
-            Ilustración generada por IA · aparece en la Actividad del estudiante
-          </p>
-        </div>
-        <button
-          onClick={() => handleRegenerateImage(imageBlockIndex)}
-          disabled={regeneratingIdx === imageBlockIndex}
-          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-copper border border-gray-200 hover:border-copper/50 bg-white px-3 py-1.5 rounded-full transition disabled:opacity-50 font-public shrink-0"
-          title="Regenerar imagen con IA"
-        >
-          {regeneratingIdx === imageBlockIndex ? (
-            <>
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              Generando…
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Regenerar
-            </>
-          )}
-        </button>
-      </div>
-    ) : null;
 
   return (
     <article className="max-w-6xl mx-auto bg-white rounded-2xl shadow-md border-t-4 border-copper font-public">
