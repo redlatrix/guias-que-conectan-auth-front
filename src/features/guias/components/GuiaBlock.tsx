@@ -2,8 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type {
   BloqueContenido,
-  MetadataImagen,
-  MetadataActividad,
+  MetadataImagen
 } from '../types/guia.types';
 import { buildImageUrl } from '../utils/buildImageUrl';
 
@@ -100,7 +99,6 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
 
   // ── ACTIVIDAD ───────────────────────────────────────────────────────────────
   if (block.tipo === 'actividad') {
-    const meta = block.metadata as Partial<MetadataActividad>;
     return (
       <div className="bg-amber/10 border-l-4 border-amber rounded-r-xl p-5 my-4">
         <div className="flex flex-wrap items-center gap-2 mb-3">
