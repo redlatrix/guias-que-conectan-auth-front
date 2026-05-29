@@ -23,7 +23,6 @@ export const GeneradorGuia = () => {
   const { currentGuia, isGenerating, isSaving, isPublishing, error, generateGuia, saveGuia, publishGuia, resetGuia } =
     useGuias();
 
-  // Formularios independientes por paso
   const {
     register: register1,
     handleSubmit: handleSubmit1,
