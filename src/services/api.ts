@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { checkTokenOrRedirect } from '../utils/token';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '/api',
@@ -7,6 +8,9 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    if (!checkTokenOrRedirect()) {
+      return Promise.reject(new axios.Cancel('Token expirado'));
+    }
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
