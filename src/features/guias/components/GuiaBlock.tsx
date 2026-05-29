@@ -107,16 +107,6 @@ export const GuiaBlock = ({ block, isEditing, onContentChange, onRegenerateImage
           <span className="text-xs font-semibold uppercase tracking-widest text-amber font-public">
             Actividad
           </span>
-          {meta.duracion_min != null && (
-            <span className="bg-amber text-white text-xs px-2 py-0.5 rounded-full font-public">
-              {meta.duracion_min} min
-            </span>
-          )}
-          {meta.tipo && (
-            <span className="bg-white border border-amber/40 text-amber text-xs px-2 py-0.5 rounded-full font-public capitalize">
-              {meta.tipo}
-            </span>
-          )}
         </div>
         {isEditing ? (
           <textarea
