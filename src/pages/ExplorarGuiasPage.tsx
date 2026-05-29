@@ -4,24 +4,31 @@ import { GlobeIcon } from '@/features/auth/components/GlobeIcon';
 import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { guiaService } from '@/features/guias/api/guia.api';
-import type { Guia } from '@/features/guias/types/guia.types';
+import type { Guia, Pagination as PaginationType } from '@/features/guias/types/guia.types';
 import { buildImageUrl } from '@/features/guias/utils/buildImageUrl';
+import { Pagination } from '@/components/Pagination';
 
 export const ExplorarGuiasPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [guias, setGuias] = useState<Guia[]>([]);
+  const [paginationData, setPaginationData] = useState<PaginationType | null>(null);
+  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
+    setIsLoading(true);
     guiaService
-      .getGuiasPublicas()
-      .then(setGuias)
+      .getGuiasPublicas(page)
+      .then((result) => {
+        setGuias(result.data);
+        setPaginationData(result.pagination);
+      })
       .catch(() => setError('No fue posible cargar las guías. Intenta de nuevo.'))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [page]);
 
   const guiasFiltradas = guias.filter((g) =>
     g.titulo.toLowerCase().includes(search.toLowerCase())
@@ -112,13 +119,18 @@ export const ExplorarGuiasPage = () => {
         {!isLoading && !error && guiasFiltradas.length > 0 && (
           <>
             <p className="text-xs text-gray-400 uppercase tracking-widest mb-5 font-public">
-              {guiasFiltradas.length} {guiasFiltradas.length === 1 ? 'guía disponible' : 'guías disponibles'}
+              {paginationData
+                ? `Mostrando ${guiasFiltradas.length} de ${paginationData.total} guías disponibles`
+                : `${guiasFiltradas.length} ${guiasFiltradas.length === 1 ? 'guía disponible' : 'guías disponibles'}`}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {guiasFiltradas.map((guia) => (
                 <GuiaPublicaCard key={guia.id} guia={guia} onClick={() => navigate(`/explorar/${guia.id}`)} />
               ))}
             </div>
+            {paginationData && (
+              <Pagination page={page} totalPages={paginationData.totalPages} onPageChange={setPage} />
+            )}
           </>
         )}
       </main>

@@ -5,6 +5,7 @@ import type {
   CreateSesionPayload,
   GenerateGuiaPayload,
   UpdateGuiaPayload,
+  PaginatedResponse,
 } from '../types/guia.types';
 
 export const guiaService = {
@@ -23,15 +24,16 @@ export const guiaService = {
     return data;
   },
 
-  getMisGuias: async (): Promise<Guia[]> => {
-    const { data } = await coreApi.get<Guia[]>('/guias/mis-guias');
+  getMisGuias: async (page = 1, limit = 6): Promise<PaginatedResponse<Guia>> => {
+    const { data } = await coreApi.get<PaginatedResponse<Guia>>('/guias/mis-guias', {
+      params: { page, limit },
+    });
     return data;
   },
 
-
   getGuia: async (id: number): Promise<Guia> => {
-    const { data } = await coreApi.get<Guia[]>('/guias/mis-guias');
-    const found = data.find((g) => g.id === id);
+    const { data } = await coreApi.get<PaginatedResponse<Guia>>('/guias/mis-guias');
+    const found = data.data.find((g) => g.id === id);
     if (!found) throw new Error('Guía no encontrada');
     return found;
   },
@@ -46,8 +48,10 @@ export const guiaService = {
     return data;
   },
 
-  getGuiasPublicas: async (): Promise<Guia[]> => {
-    const { data } = await coreApi.get<Guia[]>('/guias/publicas');
+  getGuiasPublicas: async (page = 1, limit = 6): Promise<PaginatedResponse<Guia>> => {
+    const { data } = await coreApi.get<PaginatedResponse<Guia>>('/guias/publicas', {
+      params: { page, limit },
+    });
     return data;
   },
 

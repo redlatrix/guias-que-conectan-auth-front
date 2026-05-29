@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { guiaService } from '../api/guia.api';
 import type {
   Guia,
+  Pagination,
   CreateSesionPayload,
   GenerateGuiaPayload,
   UpdateGuiaPayload,
@@ -10,6 +11,7 @@ import type {
 export interface UseGuiasReturn {
   guias: Guia[];
   currentGuia: Guia | null;
+  pagination: Pagination | null;
   isGenerating: boolean;
   isSaving: boolean;
   isPublishing: boolean;
@@ -22,7 +24,7 @@ export interface UseGuiasReturn {
   saveGuia: (id: number, payload: UpdateGuiaPayload) => Promise<void>;
   publishGuia: (id: number) => Promise<void>;
   setCurrentGuia: (guia: Guia | null) => void;
-  loadMisGuias: () => Promise<void>;
+  loadMisGuias: (page?: number) => Promise<void>;
   loadGuia: (id: number) => Promise<void>;
   resetGuia: () => void;
 }
@@ -30,6 +32,7 @@ export interface UseGuiasReturn {
 export const useGuias = (): UseGuiasReturn => {
   const [guias, setGuias] = useState<Guia[]>([]);
   const [currentGuia, setCurrentGuia] = useState<Guia | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -79,12 +82,13 @@ export const useGuias = (): UseGuiasReturn => {
     }
   }, []);
 
-  const loadMisGuias = useCallback(async () => {
+  const loadMisGuias = useCallback(async (page = 1) => {
     setIsLoadingList(true);
     setError(null);
     try {
-      const data = await guiaService.getMisGuias();
-      setGuias(data);
+      const result = await guiaService.getMisGuias(page);
+      setGuias(result.data);
+      setPagination(result.pagination);
     } catch {
       setError('Error al cargar tus guías');
     } finally {
@@ -127,6 +131,7 @@ export const useGuias = (): UseGuiasReturn => {
   return {
     guias,
     currentGuia,
+    pagination,
     isGenerating,
     isSaving,
     isPublishing,

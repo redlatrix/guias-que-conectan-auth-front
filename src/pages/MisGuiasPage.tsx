@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGuias } from '@/features/guias/hooks/useGuias';
 import { GuiaCard } from '@/features/guias/components/GuiaCard';
 import { useAuthStore } from '@/store/auth.store';
 import { AuthNavbar } from '@/features/auth/components/AuthNavbar';
+import { Pagination } from '@/components/Pagination';
 
 
 const SkeletonCard = () => (
@@ -20,13 +21,14 @@ const SkeletonCard = () => (
 
 export const MisGuiasPage = () => {
   const navigate = useNavigate();
-  const { guias, isLoadingList, error, loadMisGuias } = useGuias();
+  const { guias, pagination, isLoadingList, error, loadMisGuias } = useGuias();
   const user = useAuthStore((s) => s.user);
   const docenteNombre = user?.docente?.nombre;
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    loadMisGuias();
-  }, []);
+    loadMisGuias(page);
+  }, [page]);
 
   return (
     <div className="min-h-screen bg-cream font-public">
@@ -40,7 +42,9 @@ export const MisGuiasPage = () => {
             <p className="text-base text-gray-500 font-public mt-1">
               {isLoadingList
                 ? 'Cargando tus guías...'
-                : `${guias.length} guía${guias.length !== 1 ? 's' : ''} encontrada${guias.length !== 1 ? 's' : ''}`}
+                : pagination
+                  ? `Mostrando ${guias.length} de ${pagination.total} guía${pagination.total !== 1 ? 's' : ''}`
+                  : `${guias.length} guía${guias.length !== 1 ? 's' : ''} encontrada${guias.length !== 1 ? 's' : ''}`}
             </p>
           </div>
           <Link
@@ -83,16 +87,21 @@ export const MisGuiasPage = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {guias.map((guia) => (
-              <GuiaCard
-                key={guia.id}
-                guia={guia}
-                onClick={() => navigate(`/guias/${guia.id}`)}
-                docenteNombre={docenteNombre}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {guias.map((guia) => (
+                <GuiaCard
+                  key={guia.id}
+                  guia={guia}
+                  onClick={() => navigate(`/guias/${guia.id}`)}
+                  docenteNombre={docenteNombre}
+                />
+              ))}
+            </div>
+            {pagination && (
+              <Pagination page={page} totalPages={pagination.totalPages} onPageChange={setPage} />
+            )}
+          </>
         )}
       </main>
     </div>

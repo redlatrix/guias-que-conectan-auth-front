@@ -15,7 +15,8 @@ function clearSessionAndRedirect(): void {
 
 export function checkTokenOrRedirect(): boolean {
   const token = localStorage.getItem('token');
-  if (!token || isTokenExpired(token)) {
+  if (!token) return true;
+  if (isTokenExpired(token)) {
     const isLoginRoute =
       window.location.pathname === '/login' ||
       window.location.pathname === '/register';
